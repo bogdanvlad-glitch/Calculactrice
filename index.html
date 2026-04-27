@@ -50,36 +50,38 @@
       z-index: 5;
     }
 
+    .upgrade-button {
+      position: absolute;
+      top: 42px;
+      left: 18px;
+      z-index: 1000;
+      height: auto;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1px;
+      backdrop-filter: blur(14px);
+    }
+
+    .upgrade-button:active {
+      transform: scale(0.96);
+    }
+
     .brand {
       display: none;
     }
 
     .top-calculation {
-      position: absolute;
-      top: 74px;
-      left: 22px;
-      right: 22px;
-      min-height: 70px;
-      max-height: 150px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 22px;
-      font-weight: 300;
-      line-height: 1.22;
-      text-align: right;
-      white-space: normal;
-      word-break: break-word;
-      overflow-y: auto;
-      scrollbar-width: none;
-      z-index: 20;
-    }
-
-    .top-calculation::-webkit-scrollbar {
       display: none;
     }
 
     .display {
       height: 310px;
-      padding-top: 170px;
+      padding-top: 120px;
       padding-bottom: 20px;
       display: flex;
       flex-direction: column;
@@ -89,6 +91,23 @@
     }
 
     .expression {
+      display: block;
+      width: 100%;
+      min-height: 34px;
+      max-height: 92px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: clamp(18px, 5vw, 26px);
+      font-weight: 300;
+      line-height: 1.2;
+      text-align: right;
+      white-space: normal;
+      word-break: break-word;
+      overflow-y: auto;
+      scrollbar-width: none;
+      margin-bottom: 10px;
+    }
+
+    .expression::-webkit-scrollbar {
       display: none;
     }
 
@@ -181,6 +200,7 @@
       pointer-events: none;
       white-space: nowrap;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55);
+      z-index: 7000;
     }
 
     .toast.show {
@@ -188,16 +208,183 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    .paywall-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, 0.76);
+      backdrop-filter: blur(18px);
+    }
+
+    .paywall-overlay.show {
+      display: flex;
+    }
+
+    .paywall {
+      width: min(100%, 390px);
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 32px;
+      padding: 22px;
+      background: linear-gradient(180deg, #1c1c1e, #080808);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    }
+
+    .paywall-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .paywall-title {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .paywall-subtitle {
+      margin-top: 8px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .close-paywall {
+      width: 36px;
+      height: 36px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.11);
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .plans {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .plan {
+      border-radius: 24px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .plan.pro {
+      border-color: rgba(255, 159, 10, 0.55);
+      background: linear-gradient(180deg, rgba(255, 159, 10, 0.18), rgba(255, 255, 255, 0.07));
+    }
+
+    .plan.ultra {
+      border-color: rgba(255, 215, 0, 0.55);
+      background: linear-gradient(180deg, rgba(255, 215, 0, 0.16), rgba(255, 255, 255, 0.06));
+    }
+
+    .plan-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .plan-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .plan-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ff9f0a;
+      white-space: nowrap;
+    }
+
+    .ultra .plan-price {
+      color: #ffd60a;
+    }
+
+    .plan-description {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .plan-list {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 13.5px;
+      line-height: 1.25;
+    }
+
+    .plan-cta {
+      width: 100%;
+      height: auto;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: #ff9f0a;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .ultra .plan-cta {
+      background: #ffd60a;
+      color: #000;
+    }
+
+    .free-link {
+      width: 100%;
+      height: auto;
+      margin-top: 12px;
+      padding: 12px;
+      color: rgba(255, 255, 255, 0.62);
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .disclaimer {
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.42);
+      font-size: 11.5px;
+      line-height: 1.35;
+      text-align: center;
+    }
+
     @media (max-height: 760px) {
+      .upgrade-button {
+        top: 36px;
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+
+      .top-calculation {
+        display: none;
+      }
+
       .display {
         height: 220px;
         padding-top: 55px;
       }
 
       .expression {
-        min-height: 54px;
-        max-height: 90px;
-        font-size: 19px;
+        min-height: 24px;
+        font-size: 15px;
       }
 
       .result {
@@ -219,6 +406,7 @@
 <body>
   <main class="phone">
     <div class="status-bar" id="time">9:41</div>
+    <button class="upgrade-button" id="upgradeButton">Mettre à niveau</button>
     <div class="brand">WrongCalc</div>
     <div class="top-calculation" id="topCalculation"></div>
 
@@ -259,12 +447,65 @@
 
   <div class="toast" id="toast">Réponse certifiée fausse</div>
 
+  <div class="paywall-overlay" id="paywallOverlay">
+    <div class="paywall" role="dialog" aria-modal="true" aria-label="Offres WrongCalc">
+      <div class="paywall-header">
+        <div>
+          <div class="paywall-title">WrongCalc Pro</div>
+          <div class="paywall-subtitle">Débloque des mauvaises réponses plus avancées. Toujours faux, mais avec plus de style.</div>
+        </div>
+        <button class="close-paywall" id="closePaywall">×</button>
+      </div>
+
+      <div class="plans">
+        <div class="plan pro">
+          <div class="plan-top">
+            <div class="plan-name">Pro</div>
+            <div class="plan-price">1,99 €/mois</div>
+          </div>
+          <div class="plan-description">La version plus performante de la calculatrice qui ne marche pas.</div>
+          <div class="plan-list">
+            <div>✓ Modes de faux calculs plus réalistes</div>
+            <div>✓ Réponses proches du vrai résultat</div>
+            <div>✓ Mode chaos, prof, crush et drama</div>
+            <div>✓ Thèmes premium et sons troll</div>
+            <div>✓ Mode secret vraie calculatrice plus tard</div>
+          </div>
+          <button class="plan-cta" data-plan="Pro">Activer Pro bientôt</button>
+        </div>
+
+        <div class="plan ultra">
+          <div class="plan-top">
+            <div class="plan-name">Ultra Deluxe</div>
+            <div class="plan-price">179,99 €/mois</div>
+          </div>
+          <div class="plan-description">Attention : cette offre ne sert littéralement à rien. C’est une blague de luxe.</div>
+          <div class="plan-list">
+            <div>✓ Même calculatrice inutile</div>
+            <div>✓ Badge doré imaginaire</div>
+            <div>✓ Respect éternel non garanti</div>
+            <div>✓ Aucun avantage sérieux</div>
+            <div>✓ Prix absurde assumé</div>
+          </div>
+          <button class="plan-cta" data-plan="Ultra Deluxe">Devenir inutilement riche bientôt</button>
+        </div>
+      </div>
+
+      <button class="free-link" id="continueFree">Continuer gratuitement</button>
+      <div class="disclaimer">Paiement pas encore disponible. Les offres sont affichées pour préparer l’abonnement plus tard.</div>
+    </div>
+  </div>
+
   <script>
     const resultEl = document.getElementById("result");
     const expressionEl = document.getElementById("expression");
     const topCalculationEl = document.getElementById("topCalculation");
     const toastEl = document.getElementById("toast");
     const timeEl = document.getElementById("time");
+    const paywallOverlay = document.getElementById("paywallOverlay");
+    const upgradeButton = document.getElementById("upgradeButton");
+    const closePaywall = document.getElementById("closePaywall");
+    const continueFree = document.getElementById("continueFree");
 
     let tokens = [];
     let current = "0";
@@ -287,6 +528,14 @@
       "trop compliqué",
       "0, mais stylé"
     ];
+
+    function openPaywall() {
+      paywallOverlay.classList.add("show");
+    }
+
+    function closePaywallModal() {
+      paywallOverlay.classList.remove("show");
+    }
 
     function updateTime() {
       const now = new Date();
@@ -334,9 +583,10 @@
 
     function updateDisplay() {
       const fullCalculation = getFullCalculation();
+      const textToShow = fullCalculation || "0";
 
-      topCalculationEl.textContent = fullCalculation;
-      topCalculationEl.scrollTop = topCalculationEl.scrollHeight;
+      expressionEl.textContent = textToShow;
+      expressionEl.scrollTop = expressionEl.scrollHeight;
       resultEl.textContent = formatValue(getBottomValue());
     }
 
@@ -510,8 +760,8 @@
       const realAnswer = evaluateTokens(tokens);
       const wrongAnswer = makeWrongAnswer(realAnswer);
 
-      topCalculationEl.textContent = finalExpression + " =";
-      topCalculationEl.scrollTop = topCalculationEl.scrollHeight;
+      expressionEl.textContent = finalExpression + " =";
+      expressionEl.scrollTop = expressionEl.scrollHeight;
       current = String(wrongAnswer);
       tokens = [];
       justCalculated = true;
@@ -544,6 +794,15 @@
       });
     }
 
+    function showToastMessage(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+
+      setTimeout(() => {
+        toastEl.classList.remove("show");
+      }, 1300);
+    }
+
     function showToast() {
       const messages = [
         "Réponse certifiée fausse",
@@ -553,12 +812,7 @@
         "La vérité est overrated"
       ];
 
-      toastEl.textContent = messages[Math.floor(Math.random() * messages.length)];
-      toastEl.classList.add("show");
-
-      setTimeout(() => {
-        toastEl.classList.remove("show");
-      }, 1300);
+      showToastMessage(messages[Math.floor(Math.random() * messages.length)]);
     }
 
     document.querySelectorAll("button").forEach(button => {
@@ -566,6 +820,12 @@
         const number = button.dataset.number;
         const action = button.dataset.action;
         const nextOperator = button.dataset.operator;
+        const plan = button.dataset.plan;
+
+        if (plan) {
+          showToastMessage(plan + " arrive bientôt");
+          return;
+        }
 
         if (number !== undefined) inputNumber(number);
         if (nextOperator) chooseOperator(nextOperator);
@@ -577,6 +837,13 @@
         if (action === "decimal") inputDecimal();
         if (action === "equals") calculateWrong();
       });
+    });
+
+    upgradeButton.addEventListener("click", openPaywall);
+    closePaywall.addEventListener("click", closePaywallModal);
+    continueFree.addEventListener("click", closePaywallModal);
+    paywallOverlay.addEventListener("click", event => {
+      if (event.target === paywallOverlay) closePaywallModal();
     });
 
     window.addEventListener("keydown", event => {
@@ -597,6 +864,7 @@
     updateTime();
     setInterval(updateTime, 10000);
     updateDisplay();
+    setTimeout(openPaywall, 500);
   </script>
 </body>
 </html>
