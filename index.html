@@ -51,43 +51,44 @@
     }
 
     .brand {
+      display: none;
+    }
+
+    .top-calculation {
       position: absolute;
-      top: 42px;
-      left: 24px;
-      color: rgba(255, 255, 255, 0.25);
-      font-size: 13px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
+      top: 74px;
+      left: 22px;
+      right: 22px;
+      min-height: 70px;
+      max-height: 150px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1.22;
+      text-align: right;
+      white-space: normal;
+      word-break: break-word;
+      overflow-y: auto;
+      scrollbar-width: none;
+      z-index: 20;
+    }
+
+    .top-calculation::-webkit-scrollbar {
+      display: none;
     }
 
     .display {
       height: 310px;
-      padding-top: 80px;
+      padding-top: 170px;
       padding-bottom: 20px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: stretch;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .expression {
-      width: 100%;
-      min-height: 70px;
-      max-height: 130px;
-      padding: 0 2px;
-      color: rgba(255, 255, 255, 0.88);
-      font-size: 24px;
-      font-weight: 300;
-      line-height: 1.2;
-      text-align: right;
-      white-space: normal;
-      word-break: break-all;
-      overflow-y: auto;
-      scrollbar-width: none;
-    }
-
-    .expression::-webkit-scrollbar {
       display: none;
     }
 
@@ -219,6 +220,7 @@
   <main class="phone">
     <div class="status-bar" id="time">9:41</div>
     <div class="brand">WrongCalc</div>
+    <div class="top-calculation" id="topCalculation"></div>
 
     <section class="display">
       <div class="expression" id="expression"></div>
@@ -260,6 +262,7 @@
   <script>
     const resultEl = document.getElementById("result");
     const expressionEl = document.getElementById("expression");
+    const topCalculationEl = document.getElementById("topCalculation");
     const toastEl = document.getElementById("toast");
     const timeEl = document.getElementById("time");
 
@@ -332,8 +335,8 @@
     function updateDisplay() {
       const fullCalculation = getFullCalculation();
 
-      expressionEl.textContent = fullCalculation;
-      expressionEl.scrollTop = expressionEl.scrollHeight;
+      topCalculationEl.textContent = fullCalculation;
+      topCalculationEl.scrollTop = topCalculationEl.scrollHeight;
       resultEl.textContent = formatValue(getBottomValue());
     }
 
@@ -507,7 +510,8 @@
       const realAnswer = evaluateTokens(tokens);
       const wrongAnswer = makeWrongAnswer(realAnswer);
 
-      expressionEl.textContent = finalExpression + " =";
+      topCalculationEl.textContent = finalExpression + " =";
+      topCalculationEl.scrollTop = topCalculationEl.scrollHeight;
       current = String(wrongAnswer);
       tokens = [];
       justCalculated = true;
