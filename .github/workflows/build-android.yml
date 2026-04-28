@@ -132,11 +132,6 @@ jobs:
           }
           EOF
 
-      - name: Afficher la structure Bubblewrap
-        run: |
-          echo "Structure du dossier twa :"
-          find twa -maxdepth 3 -type f | sort
-
       - name: Construire avec Bubblewrap
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: wrongcalc123
@@ -173,27 +168,28 @@ jobs:
           }
           EOF
 
-      - name: Forcer la génération AAB avec Gradle
+      - name: Chercher les fichiers générés
         run: |
-          cd twa
-          chmod +x ./gradlew
-          ./gradlew bundleRelease assembleRelease
+          echo "Tous les fichiers générés :"
+          find twa -type f | sort
 
-      - name: Copier les fichiers générés
+          echo "Fichiers AAB/APK trouvés :"
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
+
+      - name: Préparer les fichiers Android
         run: |
           mkdir -p output
-
-          echo "Recherche des fichiers APK/AAB..."
-          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
 
           find twa -type f -name "*.aab" -exec cp {} output/ \;
           find twa -type f -name "*.apk" -exec cp {} output/ \;
 
-          echo "Contenu du dossier output :"
-          ls -la output
+          echo "Contenu de output :"
+          ls -la output || true
 
       - name: Téléverser les fichiers Android
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
-          path: output/
+          path: |
+            output/
+            twa/
