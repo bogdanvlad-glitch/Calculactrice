@@ -32,14 +32,16 @@ jobs:
           sudo apt-get install -y expect
 
       - name: Accepter les licences Android
-        run: yes | sdkmanager --licenses
+        run: |
+          yes | sdkmanager --licenses
 
       - name: Installer les outils Android nécessaires
         run: |
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Installer Bubblewrap
-        run: npm install -g @bubblewrap/cli
+        run: |
+          npm install -g @bubblewrap/cli
 
       - name: Configurer Bubblewrap
         run: |
@@ -166,9 +168,11 @@ jobs:
           }
           EOF
 
-            - name: Chercher les fichiers générés
+      - name: Chercher les fichiers générés
         run: |
+          echo "Tous les fichiers générés :"
           find twa -type f | sort
+
           echo "Fichiers AAB/APK trouvés :"
           find twa -type f \( -name "*.aab" -o -name "*.apk" \)
 
