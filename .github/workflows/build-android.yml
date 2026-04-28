@@ -1,4 +1,4 @@
-name: Build Android AAB
+name: Générer un AAB Android
 
 on:
   workflow_dispatch:
@@ -8,47 +8,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Consulter le dépôt
         uses: actions/checkout@v4
 
-      - name: Set up Node
+      - name: Configurer Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Set up Java
+      - name: Configurer Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Install Bubblewrap
+      - name: Installer Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Init Bubblewrap project
+      - name: Projet Init Bubblewrap
         run: |
           mkdir twa
           cd twa
-          bubblewrap init \
-            --manifest https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
-            --directory . \
-            --packageId com.bogdan.wrongcalc \
-            --name WrongCalc \
-            --launcherName WrongCalc \
-            --display standalone \
-            --orientation portrait \
-            --themeColor "#000000" \
-            --backgroundColor "#000000" \
-            --startUrl https://bogdanvlad-glitch.github.io/Calculactrice/ \
-            --iconUrl https://bogdanvlad-glitch.github.io/Calculactrice/icon-512.png \
+          yes "" | bubblewrap init \
+            --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
+            --directory=. \
+            --packageId=com.bogdan.wrongcalc \
+            --name=WrongCalc \
+            --launcherName=WrongCalc \
+            --display=standalone \
+            --orientation=portrait \
+            --themeColor=#000000 \
+            --backgroundColor=#000000 \
+            --startUrl=https://bogdanvlad-glitch.github.io/Calculactrice/ \
+            --iconUrl=https://bogdanvlad-glitch.github.io/Calculactrice/icon-512.png \
             --skipPwaValidation
 
-      - name: Build AAB
+      - name: Construire AAB
         run: |
           cd twa
-          bubblewrap build
+          yes "" | bubblewrap build
 
-      - name: Upload build files
+      - name: Téléverser les fichiers de compilation
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
