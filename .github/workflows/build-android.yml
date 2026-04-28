@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Consulter le dépôt
@@ -29,7 +29,7 @@ jobs:
       - name: Installer outils système
         run: |
           sudo apt-get update
-          sudo apt-get install -y expect
+          sudo apt-get install -y expect zip
 
       - name: Accepter les licences Android
         run: |
@@ -132,7 +132,12 @@ jobs:
           }
           EOF
 
-      - name: Construire le AAB
+      - name: Afficher la structure Bubblewrap
+        run: |
+          echo "Structure du dossier twa :"
+          find twa -maxdepth 3 -type f | sort
+
+      - name: Construire avec Bubblewrap
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: wrongcalc123
           BUBBLEWRAP_KEY_PASSWORD: wrongcalc123
@@ -168,20 +173,27 @@ jobs:
           }
           EOF
 
-      - name: Chercher les fichiers générés
+      - name: Forcer la génération AAB avec Gradle
         run: |
-          echo "Tous les fichiers générés :"
-          find twa -type f | sort
+          cd twa
+          chmod +x ./gradlew
+          ./gradlew bundleRelease assembleRelease
 
-          echo "Fichiers AAB/APK trouvés :"
-          find twa -type f \( -name "*.aab" -o -name "*.apk" \)
+      - name: Copier les fichiers générés
+        run: |
+          mkdir -p output
 
-      - name: Téléverser les fichiers de compilation
+          echo "Recherche des fichiers APK/AAB..."
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
+
+          find twa -type f -name "*.aab" -exec cp {} output/ \;
+          find twa -type f -name "*.apk" -exec cp {} output/ \;
+
+          echo "Contenu du dossier output :"
+          ls -la output
+
+      - name: Téléverser les fichiers Android
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
-          path: |
-            twa/app/build/outputs/bundle/**/*.aab
-            twa/app/build/outputs/apk/**/*.apk
-            twa/**/*.aab
-            twa/**/*.apk
+          path: output/
