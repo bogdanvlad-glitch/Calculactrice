@@ -26,6 +26,11 @@ jobs:
       - name: Configurer Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Installer outils système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y expect
+
       - name: Accepter les licences Android
         run: yes | sdkmanager --licenses
 
@@ -51,19 +56,79 @@ jobs:
         run: |
           mkdir twa
           cd twa
-          printf "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" | bubblewrap init \
-            --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
-            --directory=. \
-            --packageId=com.bogdan.wrongcalc \
-            --name=WrongCalc \
-            --launcherName=WrongCalc \
-            --display=standalone \
-            --orientation=portrait \
-            --themeColor=#000000 \
-            --backgroundColor=#000000 \
-            --startUrl=https://bogdanvlad-glitch.github.io/Calculactrice/ \
-            --iconUrl=https://bogdanvlad-glitch.github.io/Calculactrice/icon-512.png \
-            --skipPwaValidation
+
+          expect <<'EOF'
+          set timeout 120
+          spawn bubblewrap init --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json --directory=. --skipPwaValidation
+
+          expect {
+            "install the JDK" {
+              send "n\r"
+              exp_continue
+            }
+            "Domain:" {
+              send "bogdanvlad-glitch.github.io\r"
+              exp_continue
+            }
+            "URL path:" {
+              send "/Calculactrice/\r"
+              exp_continue
+            }
+            "Application name" {
+              send "WrongCalc\r"
+              exp_continue
+            }
+            "Launcher name" {
+              send "WrongCalc\r"
+              exp_continue
+            }
+            "Package ID" {
+              send "com.bogdan.wrongcalc\r"
+              exp_continue
+            }
+            "Version name" {
+              send "1.0.0\r"
+              exp_continue
+            }
+            "Version code" {
+              send "1\r"
+              exp_continue
+            }
+            "Display mode" {
+              send "\r"
+              exp_continue
+            }
+            "Orientation" {
+              send "portrait\r"
+              exp_continue
+            }
+            "Status bar color" {
+              send "#000000\r"
+              exp_continue
+            }
+            "Navigation bar color" {
+              send "#000000\r"
+              exp_continue
+            }
+            "Splash screen color" {
+              send "#000000\r"
+              exp_continue
+            }
+            "Theme color" {
+              send "#000000\r"
+              exp_continue
+            }
+            "Background color" {
+              send "#000000\r"
+              exp_continue
+            }
+            "Do you want" {
+              send "\r"
+              exp_continue
+            }
+            eof
+          }
+          EOF
 
       - name: Construire le AAB
         env:
@@ -71,7 +136,35 @@ jobs:
           BUBBLEWRAP_KEY_PASSWORD: wrongcalc123
         run: |
           cd twa
-          printf "\n\n\n\n\n\n\n\n\n\n" | bubblewrap build
+
+          expect <<'EOF'
+          set timeout 300
+          spawn bubblewrap build
+
+          expect {
+            "password" {
+              send "wrongcalc123\r"
+              exp_continue
+            }
+            "Password" {
+              send "wrongcalc123\r"
+              exp_continue
+            }
+            "yes/no" {
+              send "yes\r"
+              exp_continue
+            }
+            "Accept" {
+              send "y\r"
+              exp_continue
+            }
+            "Do you accept" {
+              send "y\r"
+              exp_continue
+            }
+            eof
+          }
+          EOF
 
       - name: Chercher les fichiers générés
         run: |
