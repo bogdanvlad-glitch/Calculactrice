@@ -166,14 +166,18 @@ jobs:
           }
           EOF
 
-      - name: Chercher les fichiers générés
+            - name: Chercher les fichiers générés
         run: |
-          find twa -name "*.aab" -o -name "*.apk"
+          find twa -type f | sort
+          echo "Fichiers AAB/APK trouvés :"
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \)
 
       - name: Téléverser les fichiers de compilation
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
           path: |
+            twa/app/build/outputs/bundle/**/*.aab
+            twa/app/build/outputs/apk/**/*.apk
             twa/**/*.aab
             twa/**/*.apk
