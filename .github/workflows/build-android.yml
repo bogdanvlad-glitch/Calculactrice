@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Consulter le dépôt
@@ -22,14 +23,35 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Configurer Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accepter les licences Android
+        run: yes | sdkmanager --licenses
+
+      - name: Installer les outils Android nécessaires
+        run: |
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
       - name: Installer Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Projet Init Bubblewrap
+      - name: Configurer Bubblewrap
+        run: |
+          mkdir -p ~/.bubblewrap
+          cat > ~/.bubblewrap/config.json <<EOF
+          {
+            "jdkPath": "${JAVA_HOME}",
+            "androidSdkPath": "${ANDROID_HOME}"
+          }
+          EOF
+          cat ~/.bubblewrap/config.json
+
+      - name: Initialiser le projet Android
         run: |
           mkdir twa
           cd twa
-          yes | bubblewrap init \
+          printf "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" | bubblewrap init \
             --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
             --directory=. \
             --packageId=com.bogdan.wrongcalc \
@@ -43,10 +65,13 @@ jobs:
             --iconUrl=https://bogdanvlad-glitch.github.io/Calculactrice/icon-512.png \
             --skipPwaValidation
 
-      - name: Construire AAB
+      - name: Construire le AAB
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: wrongcalc123
+          BUBBLEWRAP_KEY_PASSWORD: wrongcalc123
         run: |
           cd twa
-          yes | bubblewrap build
+          printf "\n\n\n\n\n\n\n\n\n\n" | bubblewrap build
 
       - name: Chercher les fichiers générés
         run: |
