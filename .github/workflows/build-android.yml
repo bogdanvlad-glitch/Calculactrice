@@ -65,86 +65,59 @@ jobs:
           spawn bubblewrap init --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json --directory=. --skipPwaValidation
 
           expect {
-            -re ".*install the JDK.*" {
+            -re "install the JDK" {
               send "n\r"
               exp_continue
             }
-
-            -re ".*Domain.*" {
-              send "bogdanvlad-glitch.github.io\r"
-              exp_continue
+            -re "Domain:" {
+              send "\r"
             }
+          }
 
-            -re ".*URL path.*" {
-              send "/Calculactrice/\r"
-              exp_continue
-            }
+          expect -re "URL path:"
+          send "\r"
 
-            -re ".*Application name.*" {
-              send "WrongCalc\r"
-              exp_continue
-            }
+          expect -re "Application name"
+          send "WrongCalc\r"
 
-            -re ".*Launcher name.*" {
-              send "WrongCalc\r"
-              exp_continue
-            }
+          expect -re "Launcher name"
+          send "WrongCalc\r"
 
-            -re ".*Package ID.*" {
-              send "com.bogdan.wrongcalc\r"
-              exp_continue
-            }
+          expect -re "Package ID"
+          send "com.bogdan.wrongcalc\r"
 
-            -re ".*Version name.*" {
-              send "1.0.0\r"
-              exp_continue
-            }
+          expect -re "Version name"
+          send "1.0.0\r"
 
-            -re ".*Version code.*" {
-              send "1\r"
-              exp_continue
-            }
+          expect -re "Version code"
+          send "1\r"
 
-            -re ".*Display mode.*" {
-              send "standalone\r"
-              exp_continue
-            }
+          expect -re "Display mode"
+          send "\r"
 
-            -re ".*Orientation.*" {
-              send "portrait\r"
-              exp_continue
-            }
+          expect -re "Orientation"
+          send "portrait\r"
 
-            -re ".*Status bar color.*" {
-              send "#000000\r"
-              exp_continue
-            }
+          expect -re "Status bar color"
+          send "#000000\r"
 
-            -re ".*Navigation bar color.*" {
-              send "#000000\r"
-              exp_continue
-            }
+          expect -re "Navigation bar color"
+          send "#000000\r"
 
-            -re ".*Splash screen color.*" {
-              send "#000000\r"
-              exp_continue
-            }
+          expect -re "Splash screen color"
+          send "#000000\r"
 
-            -re ".*Theme color.*" {
-              send "#000000\r"
-              exp_continue
-            }
+          expect -re "Theme color"
+          send "#000000\r"
 
-            -re ".*Background color.*" {
-              send "#000000\r"
-              exp_continue
-            }
+          expect -re "Background color"
+          send "#000000\r"
 
-            -re ".*Do you want.*" {
+          expect {
+            -re "Do you want" {
               send "\r"
               exp_continue
             }
-
             eof
           }
           EOF
@@ -170,31 +143,26 @@ jobs:
           spawn bubblewrap build --skipPwaValidation
 
           expect {
-            -re ".*password.*" {
+            -re "password" {
               send "wrongcalc123\r"
               exp_continue
             }
-
-            -re ".*Password.*" {
+            -re "Password" {
               send "wrongcalc123\r"
               exp_continue
             }
-
-            -re ".*yes/no.*" {
+            -re "yes/no" {
               send "yes\r"
               exp_continue
             }
-
-            -re ".*Accept.*" {
+            -re "Accept" {
               send "y\r"
               exp_continue
             }
-
-            -re ".*Do you accept.*" {
+            -re "Do you accept" {
               send "y\r"
               exp_continue
             }
-
             eof
           }
           EOF
