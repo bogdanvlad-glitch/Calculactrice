@@ -4,13 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="WrongCalc">
-
   <title>WrongCalc</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json" />
+
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#000000" />
+  <meta name="background-color" content="#000000" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png" />
+  <link rel="shortcut icon" href="./icon-192.png" />
+
+  <!-- Apple / iOS icons -->
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png" />
+
+  <!-- iOS PWA settings -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="WrongCalc" />
+
+  <!-- Microsoft / Windows tile -->
+  <meta name="msapplication-TileColor" content="#000000" />
+  <meta name="msapplication-TileImage" content="./icon-192.png" />
 
   <style>
     * {
@@ -280,6 +300,7 @@
 
     function updateTime() {
       const now = new Date();
+
       timeEl.textContent = now.toLocaleTimeString("fr-FR", {
         hour: "2-digit",
         minute: "2-digit"
@@ -420,11 +441,16 @@
 
     function applyOperator(a, b, operator) {
       switch (operator) {
-        case "+": return a + b;
-        case "−": return a - b;
-        case "×": return a * b;
-        case "÷": return b === 0 ? Infinity : a / b;
-        default: return b;
+        case "+":
+          return a + b;
+        case "−":
+          return a - b;
+        case "×":
+          return a * b;
+        case "÷":
+          return b === 0 ? Infinity : a / b;
+        default:
+          return b;
       }
     }
 
@@ -436,6 +462,7 @@
         const operator = operators.pop();
         const b = values.pop();
         const a = values.pop();
+
         values.push(applyOperator(a, b, operator));
       }
 
@@ -599,7 +626,7 @@
     });
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
+      navigator.serviceWorker.register("./service-worker.js");
     }
 
     updateTime();
