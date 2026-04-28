@@ -1,0 +1,57 @@
+name: Build Android AAB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Init Bubblewrap project
+        run: |
+          mkdir twa
+          cd twa
+          bubblewrap init \
+            --manifest https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
+            --directory . \
+            --packageId com.bogdan.wrongcalc \
+            --name WrongCalc \
+            --launcherName WrongCalc \
+            --display standalone \
+            --orientation portrait \
+            --themeColor "#000000" \
+            --backgroundColor "#000000" \
+            --startUrl https://bogdanvlad-glitch.github.io/Calculactrice/ \
+            --iconUrl https://bogdanvlad-glitch.github.io/Calculactrice/icon-512.png \
+            --skipPwaValidation
+
+      - name: Build AAB
+        run: |
+          cd twa
+          bubblewrap build
+
+      - name: Upload build files
+        uses: actions/upload-artifact@v4
+        with:
+          name: WrongCalc-android-build
+          path: |
+            twa/*.aab
+            twa/*.apk
