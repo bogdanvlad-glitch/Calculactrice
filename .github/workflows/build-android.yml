@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
 
     steps:
       - name: Consulter le dépôt
@@ -29,7 +29,7 @@ jobs:
       - name: Installer outils système
         run: |
           sudo apt-get update
-          sudo apt-get install -y expect zip
+          sudo apt-get install -y expect
 
       - name: Accepter les licences Android
         run: |
@@ -60,7 +60,7 @@ jobs:
           cd twa
 
           expect <<'EOF'
-          set timeout 120
+          set timeout 180
           spawn bubblewrap init --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json --directory=. --skipPwaValidation
 
           expect {
@@ -138,60 +138,38 @@ jobs:
           BUBBLEWRAP_KEY_PASSWORD: wrongcalc123
         run: |
           cd twa
+          bubblewrap build --skipPwaValidation
 
-          expect <<'EOF'
-          set timeout 300
-          spawn bubblewrap build
-
-          expect {
-            "password" {
-              send "wrongcalc123\r"
-              exp_continue
-            }
-            "Password" {
-              send "wrongcalc123\r"
-              exp_continue
-            }
-            "yes/no" {
-              send "yes\r"
-              exp_continue
-            }
-            "Accept" {
-              send "y\r"
-              exp_continue
-            }
-            "Do you accept" {
-              send "y\r"
-              exp_continue
-            }
-            eof
-          }
-          EOF
-
-      - name: Chercher les fichiers générés
+      - name: Vérifier les fichiers générés
         run: |
-          echo "Tous les fichiers générés dans twa :"
-          find twa -type f | sort
+          echo "Fichiers à la racine de twa :"
+          ls -la twa
 
-          echo "Fichiers AAB/APK trouvés :"
-          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print || true
+          echo "Recherche APK/AAB :"
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
 
       - name: Préparer les fichiers Android
         run: |
           mkdir -p output
 
-          echo "Copie des fichiers APK/AAB trouvés..."
+          if [ -f "twa/app-release-bundle.aab" ]; then
+            cp twa/app-release-bundle.aab output/WrongCalc-release.aab
+          fi
+
+          if [ -f "twa/app-release-signed.apk" ]; then
+            cp twa/app-release-signed.apk output/WrongCalc-release.apk
+          fi
+
           find twa -type f -name "*.aab" -exec cp {} output/ \; || true
           find twa -type f -name "*.apk" -exec cp {} output/ \; || true
 
-          echo "Création d'une archive complète du projet Android..."
-          zip -r output/WrongCalc-full-build.zip twa
+          echo "Contenu de output :"
+          ls -la output
 
-          echo "Contenu final du dossier output :"
-          find output -type f -print
+          test -n "$(find output -type f \( -name '*.aab' -o -name '*.apk' \) -print -quit)"
 
       - name: Téléverser les fichiers Android
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
-          path: output/**
+          path: output/*
