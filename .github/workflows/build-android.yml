@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir twa
           cd twa
-          printf "No\n" | bubblewrap init \
+          yes | bubblewrap init \
             --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
             --directory=. \
             --packageId=com.bogdan.wrongcalc \
@@ -46,12 +46,16 @@ jobs:
       - name: Construire AAB
         run: |
           cd twa
-          bubblewrap build
+          yes | bubblewrap build
+
+      - name: Chercher les fichiers générés
+        run: |
+          find twa -name "*.aab" -o -name "*.apk"
 
       - name: Téléverser les fichiers de compilation
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
           path: |
-            twa/*.aab
-            twa/*.apk
+            twa/**/*.aab
+            twa/**/*.apk
