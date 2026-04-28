@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Consulter le dépôt
@@ -29,7 +29,7 @@ jobs:
       - name: Installer outils système
         run: |
           sudo apt-get update
-          sudo apt-get install -y expect
+          sudo apt-get install -y expect zip
 
       - name: Accepter les licences Android
         run: |
@@ -56,81 +56,31 @@ jobs:
 
       - name: Initialiser le projet Android
         run: |
-          mkdir twa
+          mkdir -p twa
           cd twa
 
-          expect <<'EOF'
-          set timeout 180
-          spawn bubblewrap init --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json --directory=. --skipPwaValidation
+          bubblewrap init \
+            --manifest=https://bogdanvlad-glitch.github.io/Calculactrice/manifest.json \
+            --directory=. \
+            --packageId=com.bogdan.wrongcalc \
+            --name=WrongCalc \
+            --launcherName=WrongCalc \
+            --display=standalone \
+            --orientation=portrait \
+            --themeColor=#000000 \
+            --backgroundColor=#000000 \
+            --startUrl=https://bogdanvlad-glitch.github.io/Calculactrice/ \
+            --iconUrl=https://bogdanvlad-glitch.github.io/Calculactrice/icon-512.png \
+            --skipPwaValidation || true
 
-          expect {
-            "install the JDK" {
-              send "n\r"
-              exp_continue
-            }
-            "Domain:" {
-              send "bogdanvlad-glitch.github.io\r"
-              exp_continue
-            }
-            "URL path:" {
-              send "/Calculactrice/\r"
-              exp_continue
-            }
-            "Application name" {
-              send "WrongCalc\r"
-              exp_continue
-            }
-            "Launcher name" {
-              send "WrongCalc\r"
-              exp_continue
-            }
-            "Package ID" {
-              send "com.bogdan.wrongcalc\r"
-              exp_continue
-            }
-            "Version name" {
-              send "1.0.0\r"
-              exp_continue
-            }
-            "Version code" {
-              send "1\r"
-              exp_continue
-            }
-            "Display mode" {
-              send "\r"
-              exp_continue
-            }
-            "Orientation" {
-              send "portrait\r"
-              exp_continue
-            }
-            "Status bar color" {
-              send "#000000\r"
-              exp_continue
-            }
-            "Navigation bar color" {
-              send "#000000\r"
-              exp_continue
-            }
-            "Splash screen color" {
-              send "#000000\r"
-              exp_continue
-            }
-            "Theme color" {
-              send "#000000\r"
-              exp_continue
-            }
-            "Background color" {
-              send "#000000\r"
-              exp_continue
-            }
-            "Do you want" {
-              send "\r"
-              exp_continue
-            }
-            eof
-          }
-          EOF
+          echo "Contenu du dossier twa après init :"
+          ls -la
+
+          if [ ! -f "twa-manifest.json" ]; then
+            echo "twa-manifest.json absent, création manuelle impossible ici."
+            echo "Bubblewrap init n'a pas terminé correctement."
+            exit 1
+          fi
 
       - name: Construire avec Bubblewrap
         env:
@@ -138,27 +88,21 @@ jobs:
           BUBBLEWRAP_KEY_PASSWORD: wrongcalc123
         run: |
           cd twa
-          bubblewrap build --skipPwaValidation
+
+          bubblewrap build \
+            --skipPwaValidation
 
       - name: Vérifier les fichiers générés
         run: |
-          echo "Fichiers à la racine de twa :"
-          ls -la twa
+          echo "Tous les fichiers générés :"
+          find twa -type f | sort
 
-          echo "Recherche APK/AAB :"
-          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
+          echo "Fichiers APK/AAB :"
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print || true
 
       - name: Préparer les fichiers Android
         run: |
           mkdir -p output
-
-          if [ -f "twa/app-release-bundle.aab" ]; then
-            cp twa/app-release-bundle.aab output/WrongCalc-release.aab
-          fi
-
-          if [ -f "twa/app-release-signed.apk" ]; then
-            cp twa/app-release-signed.apk output/WrongCalc-release.apk
-          fi
 
           find twa -type f -name "*.aab" -exec cp {} output/ \; || true
           find twa -type f -name "*.apk" -exec cp {} output/ \; || true
