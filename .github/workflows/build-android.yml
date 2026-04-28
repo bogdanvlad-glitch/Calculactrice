@@ -176,20 +176,24 @@ jobs:
           echo "Fichiers AAB/APK trouvés :"
           find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
 
-      - name: Préparer les fichiers Android
+            - name: Préparer les fichiers Android
         run: |
           mkdir -p output
 
-          find twa -type f -name "*.aab" -exec cp {} output/ \;
-          find twa -type f -name "*.apk" -exec cp {} output/ \;
+          echo "Recherche des fichiers APK/AAB..."
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print || true
 
-          echo "Contenu de output :"
-          ls -la output || true
+          find twa -type f -name "*.aab" -exec cp {} output/ \; || true
+          find twa -type f -name "*.apk" -exec cp {} output/ \; || true
+
+          echo "Création d'une archive complète du projet Android..."
+          zip -r output/WrongCalc-full-build.zip twa
+
+          echo "Contenu final du dossier output :"
+          find output -type f -print
 
       - name: Téléverser les fichiers Android
         uses: actions/upload-artifact@v4
         with:
           name: WrongCalc-android-build
-          path: |
-            output/
-            twa/
+          path: output/**
