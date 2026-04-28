@@ -170,19 +170,17 @@ jobs:
 
       - name: Chercher les fichiers générés
         run: |
-          echo "Tous les fichiers générés :"
+          echo "Tous les fichiers générés dans twa :"
           find twa -type f | sort
 
           echo "Fichiers AAB/APK trouvés :"
-          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print
+          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print || true
 
-            - name: Préparer les fichiers Android
+      - name: Préparer les fichiers Android
         run: |
           mkdir -p output
 
-          echo "Recherche des fichiers APK/AAB..."
-          find twa -type f \( -name "*.aab" -o -name "*.apk" \) -print || true
-
+          echo "Copie des fichiers APK/AAB trouvés..."
           find twa -type f -name "*.aab" -exec cp {} output/ \; || true
           find twa -type f -name "*.apk" -exec cp {} output/ \; || true
 
